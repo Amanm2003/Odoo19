@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Nest under Inventory > Reporting -->
+    <menuitem id="menu_inventory_dashboard_root"
+              name="Inventory Dashboard"
+              action="action_inventory_dashboard"
+              parent="stock.menu_warehouse_report"
+              sequence="100"
+              groups="group_inventory_dashboard_user"/>
+</odoo>

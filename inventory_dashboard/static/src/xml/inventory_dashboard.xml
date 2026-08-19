@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+<t t-name="inventory_dashboard.Dashboard">
+    <div class="o_inventory_dashboard" t-att-class="state.darkMode ? 'o_id_dark' : ''">
+
+        <!-- Header -->
+        <div class="o_id_header">
+            <div class="o_id_header_left">
+                <div class="o_id_brand_icon"><i class="fa fa-cubes"/></div>
+                <div>
+                    <h2 class="o_id_title">Inventory Dashboard</h2>
+                    <p class="o_id_subtitle">Live stock, dispatch &amp; valuation overview</p>
+                </div>
+            </div>
+            <div class="o_id_actions">
+                <button class="o_id_btn o_id_btn_ghost" t-on-click="toggleDarkMode">
+                    <i class="fa fa-moon-o"/> <span>Theme</span>
+                </button>
+                <button class="o_id_btn o_id_btn_ghost" t-on-click="manualRefresh">
+                    <i class="fa fa-refresh"/> <span>Refresh</span>
+                </button>
+                <t t-if="state.isManager">
+                    <button class="o_id_btn o_id_btn_solid o_id_btn_excel" t-on-click="exportExcel">
+                        <i class="fa fa-file-excel-o"/> <span>Excel</span>
+                    </button>
+                    <button class="o_id_btn o_id_btn_solid o_id_btn_pdf" t-on-click="exportPdf">
+                        <i class="fa fa-file-pdf-o"/> <span>PDF</span>
+                    </button>
+                </t>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="o_id_filters">
+            <div class="o_id_filter_group">
+                <label class="o_id_filter_label">Warehouse</label>
+                <select class="o_id_select" t-on-change="(ev) => this.onFilterChange('warehouse_id', ev)">
+                    <option value="">All warehouses</option>
+                    <t t-foreach="state.filterOptions.warehouses" t-as="wh" t-key="wh.id">
+                        <option t-att-value="wh.id" t-esc="wh.name"/>
+                    </t>
+                </select>
+            </div>
+            <div class="o_id_filter_group">
+                <label class="o_id_filter_label">Location</label>
+                <select class="o_id_select" t-on-change="(ev) => this.onFilterChange('location_id', ev)">
+                    <option value="">All locations</option>
+                    <t t-foreach="state.filterOptions.locations" t-as="loc" t-key="loc.id">
+                        <option t-att-value="loc.id" t-esc="loc.display_name"/>
+                    </t>
+                </select>
+            </div>
+            <div class="o_id_filter_group">
+                <label class="o_id_filter_label">Category</label>
+                <select class="o_id_select" t-on-change="(ev) => this.onFilterChange('category_id', ev)">
+                    <option value="">All categories</option>
+                    <t t-foreach="state.filterOptions.categories" t-as="cat" t-key="cat.id">
+                        <option t-att-value="cat.id" t-esc="cat.display_name"/>
+                    </t>
+                </select>
+            </div>
+            <div class="o_id_filter_group">
+                <label class="o_id_filter_label">Company</label>
+                <select class="o_id_select" t-on-change="(ev) => this.onFilterChange('company_id', ev)">
+                    <option value="">All companies</option>
+                    <t t-foreach="state.filterOptions.companies" t-as="comp" t-key="comp.id">
+                        <option t-att-value="comp.id" t-esc="comp.name"/>
+                    </t>
+                </select>
+            </div>
+            <div class="o_id_filter_group">
+                <label class="o_id_filter_label">Salesperson</label>
+                <select class="o_id_select" t-on-change="(ev) => this.onFilterChange('user_id', ev)">
+                    <option value="">All salespersons</option>
+                    <t t-foreach="state.filterOptions.salespersons" t-as="u" t-key="u.id">
+                        <option t-att-value="u.id" t-esc="u.name"/>
+                    </t>
+                </select>
+            </div>
+            <div class="o_id_filter_group">
+                <label class="o_id_filter_label">Stock Status</label>
+                <select class="o_id_select" t-on-change="(ev) => this.onFilterChange('stock_status', ev)">
+                    <option value="">All statuses</option>
+                    <option value="available">Available</option>
+                    <option value="reserved">Reserved</option>
+                    <option value="low_stock">Low Stock</option>
+                    <option value="out_of_stock">Out of Stock</option>
+                    <option value="negative_stock">Negative Stock</option>
+                </select>
+            </div>
+            <div class="o_id_filter_group">
+                <label class="o_id_filter_label">From</label>
+                <input type="date" class="o_id_date"
+                    t-on-change="(ev) => this.onFilterChange('date_from', ev)"/>
+            </div>
+            <div class="o_id_filter_group">
+                <label class="o_id_filter_label">To</label>
+                <input type="date" class="o_id_date"
+                    t-on-change="(ev) => this.onFilterChange('date_to', ev)"/>
+            </div>
+            <button class="o_id_btn o_id_btn_clear" t-on-click="clearFilters">
+                <i class="fa fa-times"/> <span>Clear</span>
+            </button>
+        </div>
+
+        <div t-if="state.loading" class="o_id_loading">
+            <i class="fa fa-spinner fa-spin"/>
+            <p>Loading dashboard…</p>
+        </div>
+
+        <div t-else="">
+
+            <!-- KPI Cards -->
+            <div class="o_id_kpi_grid">
+                <div class="o_id_kpi_card" data-tone="blue" t-on-click="() => this.onKpiClick('available_stock')">
+                    <div class="o_id_kpi_icon"><i class="fa fa-archive"/></div>
+                    <div class="o_id_kpi_body">
+                        <div class="o_id_kpi_label">Available Stock</div>
+                        <div class="o_id_kpi_value" t-esc="state.kpis.available_stock"/>
+                        <div class="o_id_kpi_sub" t-esc="state.kpis.products_in_stock + ' products'"/>
+                    </div>
+                </div>
+                <div class="o_id_kpi_card" data-tone="orange" t-on-click="() => this.onKpiClick('reserved_stock')">
+                    <div class="o_id_kpi_icon"><i class="fa fa-lock"/></div>
+                    <div class="o_id_kpi_body">
+                        <div class="o_id_kpi_label">Reserved Stock</div>
+                        <div class="o_id_kpi_value" t-esc="state.kpis.reserved_stock"/>
+                    </div>
+                </div>
+                <div class="o_id_kpi_card" data-tone="purple" t-on-click="() => this.onKpiClick('planned_dispatch')">
+                    <div class="o_id_kpi_icon"><i class="fa fa-truck"/></div>
+                    <div class="o_id_kpi_body">
+                        <div class="o_id_kpi_label">Planned Dispatch</div>
+                        <div class="o_id_kpi_value" t-esc="state.kpis.planned_dispatch"/>
+                    </div>
+                </div>
+                <div class="o_id_kpi_card" data-tone="teal" t-on-click="() => this.onKpiClick('dispatched_stock')">
+                    <div class="o_id_kpi_icon"><i class="fa fa-check-circle"/></div>
+                    <div class="o_id_kpi_body">
+                        <div class="o_id_kpi_label">Dispatched Stock</div>
+                        <div class="o_id_kpi_value" t-esc="state.kpis.dispatched_stock"/>
+                    </div>
+                </div>
+                <div class="o_id_kpi_card"
+                    t-att-data-tone="state.kpis.free_stock &lt; 0 ? 'red' : 'green'"
+                    t-on-click="() => this.onKpiClick('free_stock')">
+                    <div class="o_id_kpi_icon"><i class="fa fa-balance-scale"/></div>
+                    <div class="o_id_kpi_body">
+                        <div class="o_id_kpi_label">Free Stock</div>
+                        <div class="o_id_kpi_value" t-esc="state.kpis.free_stock"/>
+                    </div>
+                </div>
+                <div class="o_id_kpi_card" data-tone="cyan" t-on-click="() => this.onKpiClick('incoming_stock')">
+                    <div class="o_id_kpi_icon"><i class="fa fa-arrow-circle-down"/></div>
+                    <div class="o_id_kpi_body">
+                        <div class="o_id_kpi_label">Incoming Stock</div>
+                        <div class="o_id_kpi_value" t-esc="state.kpis.incoming_stock"/>
+                    </div>
+                </div>
+                <div class="o_id_kpi_card" data-tone="gold" t-on-click="() => this.onKpiClick('inventory_value')">
+                    <div class="o_id_kpi_icon"><i class="fa fa-money"/></div>
+                    <div class="o_id_kpi_body">
+                        <div class="o_id_kpi_label">Inventory Value</div>
+                        <div class="o_id_kpi_value">
+                            <t t-esc="state.kpis.currency_symbol"/><t t-esc="state.kpis.inventory_value"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="o_id_kpi_card" data-tone="amber" t-on-click="() => this.onKpiClick('low_stock_count')">
+                    <div class="o_id_kpi_icon"><i class="fa fa-exclamation-triangle"/></div>
+                    <div class="o_id_kpi_body">
+                        <div class="o_id_kpi_label">Low Stock Products</div>
+                        <div class="o_id_kpi_value" t-esc="state.kpis.low_stock_count"/>
+                    </div>
+                </div>
+                <div class="o_id_kpi_card" data-tone="red" t-on-click="() => this.onKpiClick('out_of_stock_count')">
+                    <div class="o_id_kpi_icon"><i class="fa fa-ban"/></div>
+                    <div class="o_id_kpi_body">
+                        <div class="o_id_kpi_label">Out of Stock Products</div>
+                        <div class="o_id_kpi_value" t-esc="state.kpis.out_of_stock_count"/>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Extra widgets -->
+            <div class="o_id_widget_grid">
+                <div class="o_id_widget">
+                    <span class="o_id_widget_label">Today's Planned Dispatch</span>
+                    <b class="o_id_widget_value" t-esc="state.widgets.today_planned_dispatch"/>
+                </div>
+                <div class="o_id_widget">
+                    <span class="o_id_widget_label">Today's Completed Dispatch</span>
+                    <b class="o_id_widget_value" t-esc="state.widgets.today_completed_dispatch"/>
+                </div>
+                <div class="o_id_widget">
+                    <span class="o_id_widget_label">Pending Delivery Orders</span>
+                    <b class="o_id_widget_value" t-esc="state.widgets.pending_deliveries"/>
+                </div>
+                <div class="o_id_widget">
+                    <span class="o_id_widget_label">Incoming Purchase Orders</span>
+                    <b class="o_id_widget_value" t-esc="state.widgets.incoming_purchase_orders"/>
+                </div>
+                <div class="o_id_widget">
+                    <span class="o_id_widget_label">Average Daily Dispatch</span>
+                    <b class="o_id_widget_value" t-esc="state.widgets.avg_daily_dispatch"/>
+                </div>
+                <div class="o_id_widget">
+                    <span class="o_id_widget_label">Estimated Stock Coverage (Days)</span>
+                    <b class="o_id_widget_value" t-esc="state.widgets.stock_coverage_days"/>
+                </div>
+                <div class="o_id_widget">
+                    <span class="o_id_widget_label">Inventory Turnover Ratio</span>
+                    <b class="o_id_widget_value" t-esc="state.widgets.inventory_turnover_ratio"/>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="o_id_chart_grid">
+                <div class="o_id_chart_card">
+                    <h5>Stock by Category</h5>
+                    <div class="chart-container"><canvas t-ref="chartCategory"/></div>
+                </div>
+                <div class="o_id_chart_card">
+                    <h5>Stock Distribution</h5>
+                    <div class="chart-container"><canvas t-ref="chartDistribution"/></div>
+                </div>
+                <div class="o_id_chart_card o_id_chart_wide">
+                    <h5>Dispatch Trend (30 Days)</h5>
+                    <div class="chart-container"><canvas t-ref="chartTrend"/></div>
+                </div>
+                <div class="o_id_chart_card">
+                    <h5>Top 10 Products by Available Stock</h5>
+                    <div class="chart-container"><canvas t-ref="chartTopAvailable"/></div>
+                </div>
+                <div class="o_id_chart_card">
+                    <h5>Top 10 Most Dispatched Products</h5>
+                    <div class="chart-container"><canvas t-ref="chartTopDispatched"/></div>
+                </div>
+                <div class="o_id_chart_card">
+                    <h5>Warehouse Stock Comparison</h5>
+                    <div class="chart-container"><canvas t-ref="chartWarehouseComparison"/></div>
+                </div>
+            </div>
+
+            <!-- Fast/Slow/Dead stock lists -->
+            <div class="o_id_lists_grid">
+                <div class="o_id_list_card">
+                    <h5><i class="fa fa-bolt o_id_ic_success"/>Fast Moving Products</h5>
+                    <ul>
+                        <t t-foreach="state.widgets.fast_moving" t-as="p" t-key="p_index">
+                            <li><span t-esc="p.name"/><b t-esc="p.qty"/></li>
+                        </t>
+                    </ul>
+                </div>
+                <div class="o_id_list_card">
+                    <h5><i class="fa fa-hourglass-half o_id_ic_warning"/>Slow Moving Products</h5>
+                    <ul>
+                        <t t-foreach="state.widgets.slow_moving" t-as="p" t-key="p_index">
+                            <li><span t-esc="p.name"/><b t-esc="p.qty"/></li>
+                        </t>
+                    </ul>
+                </div>
+                <div class="o_id_list_card">
+                    <h5><i class="fa fa-skull o_id_ic_danger"/>Dead Stock (90+ days)</h5>
+                    <ul>
+                        <t t-foreach="state.widgets.dead_stock" t-as="p" t-key="p_index">
+                            <li><span t-esc="p.name"/><b t-esc="p.qty"/></li>
+                        </t>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="o_id_table_card">
+                <div class="o_id_table_toolbar">
+                    <h5 class="mb-0">Product Stock Detail</h5>
+                    <div class="o_id_search">
+                        <i class="fa fa-search"/>
+                        <input type="text" placeholder="Search products…" t-on-input="onSearchInput"/>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="o_id_table">
+                        <thead>
+                            <tr>
+                                <th t-on-click="() => this.setSort('product_name')">Product</th>
+                                <th t-on-click="() => this.setSort('internal_ref')">Internal Ref</th>
+                                <th t-on-click="() => this.setSort('category')">Category</th>
+                                <th t-on-click="() => this.setSort('warehouse')">Warehouse</th>
+                                <th class="text-end" t-on-click="() => this.setSort('qty_on_hand')">On Hand</th>
+                                <th class="text-end" t-on-click="() => this.setSort('reserved_qty')">Reserved</th>
+                                <th class="text-end" t-on-click="() => this.setSort('planned_dispatch')">Planned</th>
+                                <th class="text-end" t-on-click="() => this.setSort('dispatched_qty')">Dispatched</th>
+                                <th class="text-end" t-on-click="() => this.setSort('incoming_qty')">Incoming</th>
+                                <th class="text-end" t-on-click="() => this.setSort('free_stock')">Free Stock</th>
+                                <th class="text-end" t-on-click="() => this.setSort('inventory_value')">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="pagedRows" t-as="row" t-key="row.product_id + '_' + row.warehouse_id">
+                                <td t-esc="row.product_name"/>
+                                <td class="o_id_muted" t-esc="row.internal_ref"/>
+                                <td t-esc="row.category"/>
+                                <td t-esc="row.warehouse"/>
+                                <td class="text-end o_id_num" t-esc="row.qty_on_hand"/>
+                                <td class="text-end o_id_num" t-esc="row.reserved_qty"/>
+                                <td class="text-end o_id_num" t-esc="row.planned_dispatch"/>
+                                <td class="text-end o_id_num" t-esc="row.dispatched_qty"/>
+                                <td class="text-end o_id_num" t-esc="row.incoming_qty"/>
+                                <td class="text-end o_id_num"
+                                    t-att-class="row.free_stock &lt; 0 ? 'text-danger fw-bold' : 'text-success fw-bold'"
+                                    t-esc="row.free_stock"/>
+                                <td class="text-end o_id_num" t-esc="row.inventory_value"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="o_id_pagination">
+                    <span>Page <t t-esc="state.page"/> of <t t-esc="totalPages"/></span>
+                    <div class="o_id_pagination_btns">
+                        <button class="o_id_btn o_id_btn_ghost" t-on-click="() => this.goToPage(state.page - 1)">
+                            <i class="fa fa-chevron-left"/> Prev
+                        </button>
+                        <button class="o_id_btn o_id_btn_ghost" t-on-click="() => this.goToPage(state.page + 1)">
+                            Next <i class="fa fa-chevron-right"/>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</t>
+</templates>

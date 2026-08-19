@@ -1,0 +1,341 @@
+/* ==========================================================================
+   Inventory Dashboard — simplified, flat, single-accent styling.
+   One neutral surface system, one accent color used sparingly, plain
+   borders instead of shadows/gradients, one typeface, minimal motion.
+   ========================================================================== */
+
+.o_inventory_dashboard {
+  --id-bg: #F6F7F9;
+  --id-surface: #FFFFFF;
+  --id-border: #E3E5E9;
+  --id-text: #21242B;
+  --id-text-muted: #767C88;
+  --id-accent: #3D5AFE;
+  --id-accent-soft: #EEF0FE;
+  --id-green: #1E8E5F;
+  --id-red: #C0392B;
+  --id-amber: #B5790A;
+  --id-radius: 8px;
+
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--id-text);
+  background: var(--id-bg);
+  min-height: 100%;
+}
+
+.o_inventory_dashboard.o_id_dark {
+  --id-bg: #14161B;
+  --id-surface: #1C1F26;
+  --id-border: #2B2F38;
+  --id-text: #E7E9ED;
+  --id-text-muted: #9096A2;
+  --id-accent-soft: #1E2440;
+}
+
+.o_inventory_dashboard * { box-sizing: border-box; }
+.o_inventory_dashboard h2, .o_inventory_dashboard h5 { margin: 0; }
+
+/* ---------------------------------- Header ------------------------------- */
+
+.o_id_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 24px;
+  background: var(--id-surface);
+  border-bottom: 1px solid var(--id-border);
+}
+
+.o_id_header_left { display: flex; align-items: center; gap: 12px; }
+
+.o_id_brand_icon {
+  width: 34px; height: 34px;
+  border-radius: var(--id-radius);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--id-accent-soft);
+  color: var(--id-accent);
+  font-size: 15px;
+}
+
+.o_id_title { font-size: 17px; font-weight: 600; color: var(--id-text); }
+.o_id_subtitle { margin: 1px 0 0; font-size: 12px; color: var(--id-text-muted); }
+
+.o_id_actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.o_id_btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12.5px; font-weight: 500;
+  padding: 6px 12px;
+  border-radius: var(--id-radius);
+  border: 1px solid var(--id-border);
+  background: var(--id-surface);
+  color: var(--id-text);
+  cursor: pointer;
+}
+.o_id_btn:hover { background: var(--id-bg); }
+
+.o_id_btn_ghost { background: var(--id-surface); border-color: var(--id-border); color: var(--id-text); }
+
+.o_id_btn_solid { color: #fff; border-color: transparent; }
+.o_id_btn_excel { background: var(--id-green); }
+.o_id_btn_excel:hover { background: #17734C; }
+.o_id_btn_pdf { background: var(--id-red); }
+.o_id_btn_pdf:hover { background: #A5321F; }
+
+.o_id_btn_clear {
+  background: transparent;
+  border: 1px solid var(--id-border);
+  color: var(--id-text-muted);
+  align-self: flex-end;
+}
+.o_id_btn_clear:hover { color: var(--id-text); border-color: var(--id-text-muted); }
+
+/* ---------------------------------- Filters ------------------------------ */
+
+.o_id_filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 12px 24px;
+  background: var(--id-surface);
+  border-bottom: 1px solid var(--id-border);
+}
+
+.o_id_filter_group { display: flex; flex-direction: column; gap: 4px; min-width: 130px; }
+
+.o_id_filter_label {
+  font-size: 10.5px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .03em; color: var(--id-text-muted);
+}
+
+.o_id_select, .o_id_date {
+  font-size: 12.5px;
+  padding: 6px 9px;
+  border-radius: var(--id-radius);
+  border: 1px solid var(--id-border);
+  background: var(--id-surface);
+  color: var(--id-text);
+  outline: none;
+}
+.o_id_select:focus, .o_id_date:focus {
+  border-color: var(--id-accent);
+}
+
+/* ---------------------------------- Loading ------------------------------ */
+
+.o_id_loading {
+  text-align: center;
+  padding: 70px 20px;
+  color: var(--id-text-muted);
+}
+.o_id_loading i { font-size: 22px; }
+.o_id_loading p { margin-top: 10px; font-size: 13px; }
+
+/* ---------------------------------- KPI cards ----------------------------- */
+
+.o_id_kpi_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  padding: 20px 24px 0;
+}
+
+.o_id_kpi_card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--id-surface);
+  border: 1px solid var(--id-border);
+  border-radius: var(--id-radius);
+  padding: 14px;
+  cursor: pointer;
+}
+.o_id_kpi_card:hover { border-color: var(--id-accent); }
+
+.o_id_kpi_icon {
+  flex: 0 0 auto;
+  width: 34px; height: 34px;
+  border-radius: var(--id-radius);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--id-bg);
+  color: var(--id-text-muted);
+  font-size: 14px;
+}
+
+.o_id_kpi_body { min-width: 0; }
+.o_id_kpi_label {
+  font-size: 11.5px; font-weight: 500; color: var(--id-text-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.o_id_kpi_value {
+  font-size: 20px; font-weight: 600; line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+  color: var(--id-text);
+}
+.o_id_kpi_sub { font-size: 11px; color: var(--id-text-muted); margin-top: 1px; }
+
+/* Only free stock keeps a color signal (positive/negative), everything
+   else stays neutral so the color coding means something when it appears. */
+.o_id_kpi_card[data-tone="green"] .o_id_kpi_value { color: var(--id-green); }
+.o_id_kpi_card[data-tone="red"] .o_id_kpi_value { color: var(--id-red); }
+.o_id_kpi_card[data-tone="amber"] .o_id_kpi_value { color: var(--id-amber); }
+
+/* ---------------------------------- Widgets ------------------------------ */
+
+.o_id_widget_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  padding: 16px 24px 0;
+}
+
+.o_id_widget {
+  display: flex; flex-direction: column; gap: 4px;
+  background: var(--id-surface);
+  border: 1px solid var(--id-border);
+  border-radius: var(--id-radius);
+  padding: 10px 12px;
+}
+.o_id_widget_label { font-size: 11px; color: var(--id-text-muted); }
+.o_id_widget_value { font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* ---------------------------------- Charts ------------------------------ */
+
+.o_id_chart_grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 16px 24px 0;
+}
+.o_id_chart_wide { grid-column: span 3; }
+
+@media (max-width: 1100px) {
+  .o_id_chart_grid { grid-template-columns: repeat(2, 1fr); }
+  .o_id_chart_wide { grid-column: span 2; }
+}
+@media (max-width: 700px) {
+  .o_id_chart_grid { grid-template-columns: 1fr; }
+  .o_id_chart_wide { grid-column: span 1; }
+}
+
+.o_id_chart_card {
+  background: var(--id-surface);
+  border: 1px solid var(--id-border);
+  border-radius: var(--id-radius);
+  padding: 14px;
+}
+.o_id_chart_card h5 { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+.chart-container { position: relative; height: 230px; }
+
+/* ---------------------------------- Lists -------------------------------- */
+
+.o_id_lists_grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 16px 24px 0;
+}
+@media (max-width: 900px) { .o_id_lists_grid { grid-template-columns: 1fr; } }
+
+.o_id_list_card {
+  background: var(--id-surface);
+  border: 1px solid var(--id-border);
+  border-radius: var(--id-radius);
+  padding: 14px;
+}
+.o_id_list_card h5 {
+  font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 8px;
+}
+.o_id_ic_success { color: var(--id-green); }
+.o_id_ic_warning { color: var(--id-amber); }
+.o_id_ic_danger  { color: var(--id-red); }
+
+.o_id_list_card ul { list-style: none; margin: 0; padding: 0; }
+.o_id_list_card li {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--id-border);
+  font-size: 12.5px;
+}
+.o_id_list_card li:last-child { border-bottom: none; }
+.o_id_list_card li b { font-variant-numeric: tabular-nums; color: var(--id-text-muted); }
+
+/* ---------------------------------- Table -------------------------------- */
+
+.o_id_table_card {
+  background: var(--id-surface);
+  border: 1px solid var(--id-border);
+  border-radius: var(--id-radius);
+  margin: 16px 24px 24px;
+  overflow: hidden;
+}
+
+.o_id_table_toolbar {
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--id-border);
+}
+.o_id_table_toolbar h5 { font-size: 13.5px; font-weight: 600; }
+
+.o_id_search {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--id-bg);
+  border: 1px solid var(--id-border);
+  border-radius: var(--id-radius);
+  padding: 6px 10px;
+  min-width: 200px;
+}
+.o_id_search i { color: var(--id-text-muted); font-size: 12px; }
+.o_id_search input {
+  border: none; background: transparent; outline: none;
+  font-size: 12.5px; color: var(--id-text); width: 100%;
+}
+
+.o_id_table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.o_id_table thead th {
+  text-align: left;
+  font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .02em;
+  color: var(--id-text-muted);
+  background: var(--id-bg);
+  padding: 9px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--id-border);
+  white-space: nowrap;
+}
+.o_id_table thead th:hover { color: var(--id-text); }
+.o_id_table tbody td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--id-border);
+  color: var(--id-text);
+}
+.o_id_table tbody tr:last-child td { border-bottom: none; }
+
+.o_id_num { font-variant-numeric: tabular-nums; }
+.o_id_muted { color: var(--id-text-muted); }
+.text-end { text-align: right; }
+.text-danger { color: var(--id-red); }
+.text-success { color: var(--id-green); }
+.fw-bold { font-weight: 600; }
+
+.o_id_pagination {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--id-text-muted);
+}
+.o_id_pagination_btns { display: flex; gap: 8px; }
+
+/* ---------------------------------- Focus states ------------------------- */
+
+.o_inventory_dashboard button:focus-visible,
+.o_inventory_dashboard input:focus-visible,
+.o_inventory_dashboard select:focus-visible {
+  outline: 2px solid var(--id-accent);
+  outline-offset: 1px;
+}

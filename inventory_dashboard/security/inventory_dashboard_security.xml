@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="group_inventory_dashboard_user" model="res.groups">
+        <field name="name">Inventory Dashboard User</field>
+    </record>
+
+    <record id="group_inventory_dashboard_manager" model="res.groups">
+        <field name="name">Inventory Dashboard Manager</field>
+        <field name="implied_ids" eval="[(4, ref('inventory_dashboard.group_inventory_dashboard_user'))]"/>
+    </record>
+
+</odoo>
