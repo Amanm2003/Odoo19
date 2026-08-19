@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_sale_approval_config"
+            model="ir.actions.act_window">
+        <field name="name">Approval Rules</field>
+        <field name="res_model">sale.approval.config</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="menu_sale_approval_root"
+        name="Sales Approvals"
+        parent="sale.menu_sale_config"
+        sequence="100"/>
+
+    <menuitem
+        id="menu_sale_approval_config"
+        name="Approval Rules"
+        parent="menu_sale_approval_root"
+        action="action_sale_approval_config"/>
+
+</odoo>

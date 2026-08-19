@@ -1,0 +1,77 @@
+<odoo>
+
+    <record id="sale_order_approval_form" model="ir.ui.view">
+
+        <field name="name">sale.order.approval.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header" position="inside">
+                <!-- <button
+                    name="action_submit_for_approval"
+                    string="Submit Approval"
+                    type="object"
+                    invisible="state != 'draft' or approval_state == 'waiting_approval'"/> -->
+                <button
+                    name="action_submit_for_approval"
+                    string="Submit for Approval"
+                    type="object"
+                    invisible="state != 'draft'
+                            or approval_state == 'waiting_approval'
+                            or not approval_required"/>
+                <button
+                    name="action_approve"
+                    string="Approve"
+                    type="object"
+                    invisible="approval_state != 'waiting_approval'"/>
+                <button
+                    name="action_reject"
+                    string="Reject"
+                    type="object"
+                    invisible="approval_state != 'waiting_approval'"/>
+                <!-- <field name="approval_state"
+                       widget="statusbar"/> -->
+            </xpath>
+            <!-- <xpath expr="//div[contains(@class, 'oe_title')]/h1"
+                position="replace">
+                <h1 class="d-flex align-items-center gap-2">
+                    <field name="name" readonly="1"/>
+                    <field name="approval_state"
+                        widget="badge"
+                        readonly="1"
+                        nolabel="1"/>
+                </h1>
+            </xpath> -->
+             <!-- <xpath expr="(//button[@name='action_confirm'])[1]" position="attributes">
+            <attribute name="invisible">
+                state not in ('draft', 'sent') or approval_required
+            </attribute>
+        </xpath> -->
+
+        <!-- Second Confirm button -->
+        <xpath expr="(//button[@name='action_confirm'])[2]" position="attributes">
+            <attribute name="invisible">
+                state not in ('draft', 'sent') or approval_required
+            </attribute>
+        </xpath>
+
+            <xpath expr="//div[@class='oe_title']/h1" position="replace">
+                <h1 class="d-flex align-items-center gap-2 w-100">
+                    <field name="name" readonly="1"/>
+                    <field name="approval_state"
+                        widget="badge"
+                        readonly="1"
+                        nolabel="1"
+                        decoration-success="approval_state == 'approved'"
+                        decoration-warning="approval_state == 'waiting_approval'"
+                        decoration-danger="approval_state == 'rejected'"
+                        class="fs-6 align-self-center"/>
+                </h1>
+            </xpath>
+
+        </field>
+
+    </record>
+
+</odoo>
