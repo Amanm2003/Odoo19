@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_credit_control" model="ir.ui.view">
+        <field name="name">sale.order.form.credit.control</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Technical field needed for approver-only button visibility.
+                 approval_required / approval_state / approval_reason are already
+                 present in the Credit Control page below. -->
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="can_approve_credit" invisible="1"/>
+            </xpath>
+
+            <!-- Hide the native Confirm buttons while approval is pending.
+                 They reappear once the order is approved, or when approval is
+                 not required. A configured approver (can_approve_credit) always
+                 keeps Confirm visible and confirms directly (see action_confirm). -->
+            <xpath expr="//button[@id='action_confirm']" position="attributes">
+                <attribute name="invisible">state != 'sent' or (approval_required and approval_state != 'approved' and not can_approve_credit)</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_confirm' and not(@id)]" position="attributes">
+                <attribute name="invisible">state != 'draft' or (approval_required and approval_state != 'approved' and not can_approve_credit)</attribute>
+            </xpath>
+
+            <!-- Workflow buttons in the header -->
+            <xpath expr="//header" position="inside">
+                <button name="action_request_credit_approval" type="object"
+                        string="Request Approval" class="btn-warning"
+                        invisible="not approval_required or approval_state in ('to_approve', 'approved') or state not in ('draft', 'sent') or can_approve_credit"/>
+                <button name="action_approve_credit" type="object"
+                        string="Approve Credit" class="btn-success"
+                        invisible="approval_state != 'to_approve' or not can_approve_credit"/>
+                <button name="action_refuse_credit" type="object"
+                        string="Refuse Credit" class="btn-danger"
+                        invisible="approval_state != 'to_approve' or not can_approve_credit"/>
+            </xpath>
+
+            <!-- Status alerts above the sheet -->
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-warning m-0" role="alert"
+                     invisible="approval_state != 'to_approve'">
+                    <i class="fa fa-lock" title="On hold"/>
+                    This sale order is on <strong>credit hold</strong> and is
+                    awaiting approval from a configured credit approver.
+                </div>
+                <div class="alert alert-danger m-0" role="alert"
+                     invisible="approval_state != 'refused'">
+                    <i class="fa fa-times-circle" title="Refused"/>
+                    Credit approval was <strong>refused</strong> for this order.
+                </div>
+                <div class="alert alert-success m-0" role="alert"
+                     invisible="approval_state != 'approved'">
+                    <i class="fa fa-check-circle" title="Approved"/>
+                    Credit <strong>approved</strong> - this order can be confirmed
+                    normally.
+                </div>
+            </xpath>
+
+            <!-- Credit Control notebook page -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Credit Control" name="credit_control">
+                    <group>
+                        <group string="Evaluation">
+                            <field name="approval_required"/>
+                            <field name="approval_reason"
+                                   invisible="not approval_required"/>
+                        </group>
+                        <group string="Approval">
+                            <field name="approval_state"/>
+                            <field name="approved_by"
+                                   invisible="approval_state not in ('approved', 'refused')"/>
+                            <field name="approval_date"
+                                   invisible="approval_state not in ('approved', 'refused')"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

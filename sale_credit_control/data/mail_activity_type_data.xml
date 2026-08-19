@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_activity_credit_approval" model="mail.activity.type">
+        <field name="name">Credit Approval</field>
+        <field name="summary">Sale order on credit hold - approval required</field>
+        <field name="icon">fa-usd</field>
+        <field name="category">default</field>
+        <field name="res_model">sale.order</field>
+        <field name="delay_count">0</field>
+    </record>
+</odoo>
